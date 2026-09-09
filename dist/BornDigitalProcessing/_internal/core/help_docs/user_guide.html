@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Initial Born-Digital Processing Application User Guide</title>
+  <link rel="stylesheet" href="user_guide.css">
+</head>
+<body>
+  <main class="page" id="top">
+
+    <section class="cover" aria-labelledby="cover-title">
+      <h1 id="cover-title">Initial Born-Digital Processing Application User Guide</h1>
+      <div class="metadata">
+        <div>Version 1.0</div>
+        <div>Build 31</div>
+        <div>Python BagIt library: 1.9.0</div>
+        <div>U.S. Library of Congress</div>
+        <div>Manuscript Division, Preparation Section</div>
+      </div>
+    </section>
+
+    <nav class="toc" id="toc" aria-labelledby="toc-title">
+      <h1 id="toc-title">Table of Contents</h1>
+      <ul>
+        <li><a href="#introduction">Introduction</a>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#intended-users">Intended Users</a></li>
+            <li><a href="#application-overview">Born-digital processing application</a></li>
+            <li><a href="#version-information">Version Information</a></li>
+          </ul>
+        </li>
+        <li><a href="#getting-started">Getting Started</a>
+          <ul>
+            <li><a href="#before-you-begin">Before You Begin</a></li>
+            <li><a href="#starting-the-application">Starting the Application</a></li>
+            <li><a href="#understanding-main-window">Understanding the Main Window</a>
+              <ul>
+                <li><a href="#sections-of-application">Sections of Application</a></li>
+              </ul>
+            </li>
+            <li><a href="#preparing-job">Preparing a Processing Job</a>
+              <ul>
+                <li><a href="#menu-options">Menu Options</a></li>
+                <li><a href="#bagger-profile">Selecting a Bagger Profile</a></li>
+                <li><a href="#media-information">Entering Media Information</a></li>
+                <li><a href="#select-drive-directory">Selecting a Drive or Directory</a></li>
+                <li><a href="#select-output-directory">Selecting an Output Directory</a></li>
+                <li><a href="#confirm-pairings">Confirming Digital ID Pairings</a></li>
+                <li><a href="#correct-pairing">Correcting an Incorrect Pairing</a></li>
+              </ul>
+            </li>
+            <li><a href="#executing-tasks">Executing the Processing Tasks</a>
+              <ul>
+                <li><a href="#processing-status">Processing Status</a></li>
+                <li><a href="#script-output">Script Output Window</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#output-reports">Output Reports and Files</a>
+          <ul>
+            <li><a href="#directory-listing">Directory Listing</a></li>
+            <li><a href="#limited-extensions">Scan for limited file extensions</a></li>
+            <li><a href="#brunhilde">Brunhilde File Format Scan</a></li>
+            <li><a href="#byte-count">Byte Count Report</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <section id="introduction">
+      <h1>Introduction</h1>
+
+      <h2 id="about">About</h2>
+      <p>The Initial Born-Digital Processing Application is a tool for the initial ingest and processing of born-digital material in archival collections. The application combines several common processing tasks into a single interface, including creating directory listings, scanning for files that may require additional workflows, creating BagIt bags, identifying file formats, and generating byte-count reports.</p>
+
+      <h2 id="intended-users">Intended Users</h2>
+      <p>This program is intended for archivists who process born-digital content and media. This particular version is meant specifically for the staff of the Manuscript Division at the Library of Congress. Subsequent versions may expand access to other special collections at the Library of Congress and elsewhere.</p>
+
+      <h2 id="application-overview">Born-digital processing application</h2>
+      <p>The Born-Digital Processing Application is a graphical user interface (GUI) that places many helpful applications commonly used for the initial ingest of born-digital archival material into a single application to help prepare material for archival appraisal or additional processing and workflows. This program allows a user to select processing tasks to run against multiple pieces of media. The application uses the directory containing the existing Bagger JSON profiles and identifies profiles specific to the Manuscript Division by searching the <code>MSS-Contact-Info</code> field for “Manuscript Division.”</p>
+
+      <h2 id="version-information">Version Information</h2>
+      <p>This is the initial version of the program and includes the following processing tasks:</p>
+      <ul>
+        <li>Directory listing</li>
+        <li>Scan for limited file extensions to flag or discover specific files for additional workflows:
+          <ul>
+            <li>Compressed files: <code>.zip</code>, <code>.rar</code>, <code>.tar</code>, <code>.gz</code>, <code>.bz2</code>, <code>.7z</code>, <code>.xz</code>, <code>.lz</code>, <code>.z</code>, <code>.arj</code>, <code>.lzh</code>, <code>.tgz</code>, <code>.tbz2</code>, <code>.txz</code>, <code>.zst</code>, and <code>.sit</code></li>
+            <li>Email files: <code>.pst</code>, <code>.eml</code>, <code>.msg</code>, <code>.mbox</code>, <code>.ost</code>, <code>.olm</code>, <code>.dbx</code>, <code>.mbx</code>, <code>.mime</code>, <code>.nws</code>, <code>.vcf</code>, and <code>.ics</code></li>
+            <li>Multimedia files: <code>.vob</code> and <code>.cda</code></li>
+            <li>Apple patterns: <code>._</code>, <code>.DS_Store</code>, and <code>.AppleDouble</code></li>
+          </ul>
+        </li>
+        <li><strong>Create Bag:</strong> Uses BagIt to preserve the selected directory or drive.</li>
+        <li><strong>Byte count:</strong> Scans files and calculates the byte size of a file and all the files in a directory and records it onto a spreadsheet. When scanning bagged content, the application compares its calculated byte count with the value recorded in the <code>Payload-Oxum</code> field of the bag's <code>bag-info.txt</code> file.</li>
+        <li><strong>File format:</strong> Uses Brunhilde to scan files to identify file format and allows you to select the output format.</li>
+      </ul>
+      <a class="back-to-toc" href="#toc">Back to Table of Contents</a>
+    </section>
+
+    <section id="getting-started">
+      <h1>Getting Started</h1>
+
+      <h2 id="before-you-begin">Before You Begin</h2>
+      <p>Before beginning, organize the media to ensure that each drive or directory is associated with the correct Digital ID. The application includes several steps to help prevent media and Digital IDs from being mismatched. Before connecting a drive to the computer, make sure you know its Digital ID so that it can be entered into the application.</p>
+      <p>You are able to select where the reports and bag materials are saved. It is recommended that these files be saved in the external drive for your collection.</p>
+
+      <h2 id="starting-the-application">Starting the Application</h2>
+      <p>The program comes packaged within a ZIP file, so the first step is to extract the compressed file. After the files have been extracted, open the <code>BornDigitalProcessing</code> directory and double click on <code>BornDigitalProcessing.exe</code> to start the application.</p>
+
+      <h2 id="understanding-main-window">Understanding the Main Window</h2>
+      <h3 id="sections-of-application">Sections of Application</h3>
+      <p>The Initial Born-Digital Processing Application consists of:</p>
+      <ul class="interface-list">
+        <li><strong>[1] Menu Bar</strong><span class="key k1"></span>: Use to access and select Processing Tasks.</li>
+        <li><strong>[2] Project Selection</strong><span class="key k2"></span>: BaggIt JSON file selection.</li>
+        <li><strong>[3] Metadata / Project Information Fields</strong><span class="key k3"></span>: Many of these fields will autofill from information in the BagIt JSON file. The fields that require user input are the Event-Agent and registration number.</li>
+        <li><strong>[4] Digital ID and Naming</strong><span class="key k4"></span>: Field used to enter Digital ID for collection digital media and for exported files.</li>
+        <li><strong>[5] Media Selection</strong><span class="key k5"></span>: Selects the drive or directory for processing.</li>
+        <li><strong>[6] Output Configuration</strong><span class="key k6"></span>: These controls allow you to select where to save reports and bags created by the application.</li>
+        <li><strong>[7] Processing Controls</strong><span class="key k7"></span>: Contains controls for confirming that a Digital ID corresponds to the selected drive or directory, removing selections, and starting the selected processing tasks. Select <strong>Run</strong> to begin processing.</li>
+        <li><strong>[8] Status and Progress</strong><span class="key k8"></span>: Displays the current processing task, file, and source, as well as the next task to be performed. <strong>Reset State</strong> clears the current drive and directory selections, registration number, and media count.</li>
+        <li><strong>[9] Script Output Window</strong><span class="key k9"></span>: Displays detailed information about the processes.</li>
+      </ul>
+
+      <figure class="wide">
+        <img src="images/figure01_main_window.png" alt="Numbered and color-coded sections of the Initial Born-Digital Processing Application main window">
+        <figcaption>Figure 1</figcaption>
+      </figure>
+
+      <h2 id="preparing-job">Preparing a Processing Job</h2>
+
+      <h3 id="menu-options">Menu Options</h3>
+      <ul>
+        <li><strong>Processing Tasks</strong>
+          <ul>
+            <li><strong>Directory Listing:</strong> creates text files of directory listings for each drive or directory.</li>
+            <li><strong>Scan for limited file extensions</strong> (compressed files, email files, multimedia files (<code>.vob</code> and <code>.cda</code>), Apple patterns (<code>.DS_Store</code>, <code>._</code>, and <code>.AppleDouble</code>)): creates a spreadsheet providing the file name, location, and number of each extension found.</li>
+            <li><strong>Create Bag (Bags drives and directories):</strong> checking this option will cause the application to bag the selected drive and/or directory.</li>
+            <li><strong>Byte Count</strong></li>
+            <li><strong>File Format &gt; Output Selection &gt;</strong> Excel Output and/or HTML Output and/or PDF Output</li>
+            <li><strong>File Format &gt; Signature update</strong></li>
+          </ul>
+        </li>
+        <li><strong>Help</strong>
+          <ul>
+            <li>User Guide</li>
+            <li>Report Bug or Suggestion</li>
+            <li>About</li>
+          </ul>
+        </li>
+      </ul>
+
+      <p>In the Processing Tasks menu, click on the boxes next to the processing tasks you want to use. The File Format submenu expands to allow you to select the output format and to update the file signature definitions.</p>
+      <p>The Help menu provides access to an HTML version of this user guide, the Report Bug or Suggestion form, and the About window. The About window provides basic information about the application, including its version, build number, and build date.</p>
+
+      <p>Select <strong>Report Bug or Suggestion</strong> from the Help menu to open the bug and suggestion submission window shown in Figure 2.</p>
+
+      <figure class="narrow">
+        <img src="images/figure02_bug_submission.png" alt="Report an Issue or Suggestion window">
+        <figcaption>Figure 2: Bug Submission window</figcaption>
+      </figure>
+
+      <p>The Report Type field allows you to identify the submission as a bug, suggestion, or other issue. Enter a title and provide information in the <strong>What Happened?</strong> and <strong>Additional Comments</strong> fields. Screenshots can also be attached using the <strong>Attach Screenshot(s)</strong> button.</p>
+      <p>When the report is saved, the application includes a 200-line excerpt from the application log and packages the report, attached screenshots, and log excerpt into a ZIP file at the selected save location.</p>
+
+      <h3 id="bagger-profile">Selecting a Bagger Profile</h3>
+      <p>The Bagger Profile pull-down menu displays the LC-Project value from each available Bagger profile. After a profile is selected, the application automatically populates the LC Project, MSS-Contact-Info, Restrictions, LC-LCCN, and Collection Number fields. If the selected profile contains multiple Event-Agent values, the Event-Agent field becomes a pull-down menu to select the person processing the born-digital material.</p>
+
+      <figure class="narrow">
+        <img src="images/figure03_bagger_profile.png" alt="Bagger profile pull-down menu showing LC-Project selection">
+        <figcaption>Figure 3: LC-Project selection</figcaption>
+      </figure>
+
+      <figure class="narrow">
+        <img src="images/figure04_autofill_fields.png" alt="Automatically populated project information fields">
+        <figcaption>Figure 4: Auto filled fields</figcaption>
+      </figure>
+
+      <h3 id="media-information">Entering Media Information</h3>
+      <p>Enter the registration number assigned by the born-digital accessioner in the Registration Number field.</p>
+      <p>Enter the media number associated with each drive or directory. The application combines the collection ID, registration number, and media number to create the Digital ID.</p>
+      <p>Multiple media count numbers can be entered at the same time. Enter each number followed by a space. The application will generate the complete Digital ID (<strong>Collection Number + Registration number + Sequential media number</strong>) for each media count number and display the resulting IDs in the Script Output Window.</p>
+
+      <figure class="narrow">
+        <img src="images/figure05_media_information.png" alt="Registration number and media count fields">
+        <figcaption>Figure 5: Entering registration and media count numbers</figcaption>
+      </figure>
+
+      <figure class="narrow">
+        <img src="images/figure06_generated_digital_ids.png" alt="Generated Digital IDs displayed in the Script Output Window">
+        <figcaption>Figure 6: Generated Digital ID displayed in the Script Output Window</figcaption>
+      </figure>
+
+      <h3 id="select-drive-directory">Selecting a Drive or Directory</h3>
+      <p>Click <strong>Select Directory/Drive</strong> to open File Explorer. Navigate to and select the drive or directory containing the born-digital material to be processed.</p>
+      <p>Drives and directories are matched to Digital IDs in the order they are selected. The first selected drive or directory is associated with the first Digital ID entered, the second selection is associated with the second Digital ID, and so on.</p>
+      <p>After each selection, verify that the correct drive or directory is associated with the intended Digital ID before continuing.</p>
+
+      <figure class="narrow">
+        <img src="images/figure07_select_directory_drive.png" alt="Select Directory/Drive button">
+        <figcaption>Figure 7: Select Directory/Drive button</figcaption>
+      </figure>
+
+      <h3 id="select-output-directory">Selecting an Output Directory</h3>
+      <p>Click <strong>Select Output Directory</strong> to open File Explorer. Navigate to and select the directory where reports and BagIt bags created during processing will be saved.</p>
+      <p>Select <strong>Preserve Output Directory</strong> to retain the selected output directory when the application is reset. If this option is not selected, the output directory will be cleared when the application is reset.</p>
+
+      <figure class="narrow">
+        <img src="images/output_directory.png" alt="Preserve Output Directory option and Select Output Directory button">
+        <figcaption>Figure 8: Select Output Directory</figcaption>
+      </figure>
+
+      <h3 id="confirm-pairings">Confirming Digital ID Pairings</h3>
+      <p>Before processing can begin, the selected drives and directories must be confirmed with their associated Digital IDs. Click <strong>Confirm Digital ID</strong> to confirm the pairings.</p>
+      <p>After confirmation, the pairings are displayed in the Script Output Window. Review the displayed information and verify that each drive or directory is associated with the correct Digital ID before proceeding.</p>
+
+      <figure class="narrow">
+        <img src="images/digital_id_pairing.png" alt="Confirmation of Digital ID pairings in the Script Output Window">
+        <figcaption>Figure 9: Script Output Window result after pairing</figcaption>
+      </figure>
+
+      <h3 id="correct-pairing">Correcting an Incorrect Pairing</h3>
+      <p>If a drive, directory, or Digital ID was selected incorrectly, click <strong>Deselect Directory/Drive</strong>. The Deselect Drives, Directories, or Digital IDs window will open.</p>
+
+      <figure class="narrow">
+        <img src="images/figure08_deselect_button.png" alt="Deselect Directory/Drive button">
+        <figcaption>Figure 10: Deselect Directory/Drive button</figcaption>
+      </figure>
+
+      <p>To remove a Digital ID, select the checkbox next to the ID and click <strong>OK</strong>. To remove both a selected drive or directory and its associated Digital ID, select the checkbox for each item and click <strong>OK</strong>.</p>
+
+      <figure class="narrow">
+        <img src="images/figure09_deselect_window.png" alt="Deselect Drives, Directories, or Digital IDs window">
+        <figcaption>Figure 11: The Deselect Drives, Directories, or Digital IDs window</figcaption>
+      </figure>
+
+      <p>Drives, directories, and Digital IDs can also be removed individually. After the selections are removed, the Script Output Window updates to display the remaining Digital IDs and drive/directory selections.</p>
+
+      <figure class="narrow">
+        <img src="images/figure10_post_removal.png" alt="Script Output Window after removal of Digital IDs and drive or directory selections">
+        <figcaption>Figure 12: Script Output Window post removal</figcaption>
+      </figure>
+
+      <p>If necessary, enter or select the corrected information and confirm the Digital ID pairings again before processing. Do not begin processing until all Digital ID pairings have been verified.</p>
+
+      <h2 id="executing-tasks">Executing the Processing Tasks</h2>
+      <p>Once the Digital IDs and selected drives or directories have been reviewed and confirmed, processing can begin. Click <strong>Run</strong>, located next to the <strong>Confirm Digital ID</strong> button, to start the selected processing tasks.</p>
+      <p>During processing, the application provides two areas for monitoring activity: Processing Status and the Script Output Window. Processing Status provides information about the task currently being performed, while the Script Output Window provides more detailed information about processing activity and results.</p>
+
+      <h3 id="processing-status">Processing Status</h3>
+      <p>The Processing Status area displays the progress of the current operation. It shows the current processing step, file, source location, and activity. The progress bar provides additional information about the progress of the current task.</p>
+
+      <figure class="wide">
+        <img src="images/figure11_processing_status.png" alt="Processing Status area showing current step, file, source, and activity">
+        <figcaption>Figure 13: Processing Status</figcaption>
+      </figure>
+
+      <h3 id="script-output">Script Output Window</h3>
+      <p>The Script Output Window provides detailed information about processing activity and results. It displays when processing tasks start and finish, processing results and status messages, byte-count comparison results, and paths to reports and other outputs created by the application.</p>
+      <p>Report and output paths are displayed as clickable links. Select a link to open the corresponding file or location.</p>
+
+      <figure class="narrow">
+        <img src="images/figure12_script_output.png" alt="Processing information and output links displayed in the Script Output Window">
+        <figcaption>Figure 14: Processing information and output links displayed in the Script Output Window</figcaption>
+      </figure>
+
+      <a class="back-to-toc" href="#toc">Back to Table of Contents</a>
+    </section>
+
+    <section id="output-reports">
+      <h1>Output Reports and Files</h1>
+      <p>When processing tasks are run, the application creates up to four directories for storing generated files: <code>bags</code>, <code>directory_listing_output</code>, <code>reports</code>, and <code>temp_files</code>. The following sections describe the files created by each processing task and where those files are stored.</p>
+
+      <h2 id="directory-listing">Directory Listing</h2>
+      <p>A separate text file is created for each selected drive or directory using the following Command Prompt command:</p>
+      <div class="command">DIR [pathname] /a /s /t:w [Digital ID]_dir.txt</div>
+      <p>This is the standard command used by the Manuscript Division to create directory listings for born-digital material.</p>
+
+      <figure class="narrow">
+        <img src="images/directory_listing.png" alt="Example directory listing text file">
+        <figcaption>Figure 15: Directory Listing</figcaption>
+      </figure>
+
+      <p>The resulting directory listing provides file and directory names, file sizes in bytes, the number of files in each directory, and, when scanning a drive, basic information about the drive.</p>
+
+      <h2 id="limited-extensions">Scan for limited file extensions</h2>
+      <p>The limited file extension scan creates an Excel spreadsheet containing a minimum of two worksheets: a Summary worksheet and a separate worksheet for each selected drive or directory scanned.</p>
+
+      <figure class="narrow">
+        <img src="images/figure13_worksheets.png" alt="Excel worksheet tabs for a limited file extension scan">
+        <figcaption>Figure 16: Worksheets</figcaption>
+      </figure>
+
+      <p>Within the Summary worksheet, each file extension is associated with the Digital ID where the files were located and the number of files found. The Digital ID and file extension are hyperlinked to more detailed information in the corresponding worksheets. In this example, there is only one Digital ID, so both hyperlinks lead to locations within the same worksheet.</p>
+
+      <figure class="narrow">
+        <img src="images/figure14_extension_summary.png" alt="Summary worksheet showing Digital ID, file extension, file category, and total files">
+        <figcaption>Figure 17: Summary</figcaption>
+      </figure>
+
+      <p>Clicking a Digital ID opens the worksheet for that Digital ID. Clicking a file extension takes you to the first instance of that file extension in the worksheet associated with the Digital ID shown to its left.</p>
+
+      <figure class="wide">
+        <img src="images/extension_details.png" alt="Worksheet showing file extension, file path, and file size">
+        <figcaption>Figure 18: Path to Files</figcaption>
+      </figure>
+
+      <h2 id="brunhilde">Brunhilde File Format Scan</h2>
+      <p>The Brunhilde file format scan can generate reports in PDF, HTML, and Excel formats. Each report contains the same basic information but presents it in a different format. This section focuses on the Excel report. The Excel file format report contains a minimum of three worksheets: <code>Scan_Summary</code>, <code>Complete File Listing</code>, and one worksheet for each selected drive or directory processed.</p>
+
+      <figure class="narrow">
+        <img src="images/brunhilde_summary.png" alt="Brunhilde Excel Scan Summary worksheet with Siegfried version and file format counts">
+        <figcaption>Figure 19: File Format Summary Results</figcaption>
+      </figure>
+
+      <p>The top table provides information about the scan, including the Siegfried version and the date and time of the scan. The lower table provides a summary of the identified file formats, including the format name, PRONOM ID, version (when applicable), and the number of files identified for each format.</p>
+
+      <figure class="wide">
+        <img src="images/brunhilde_complete_listing.png" alt="Brunhilde Complete File Listing worksheet">
+        <figcaption>Figure 20: File Format File Results</figcaption>
+      </figure>
+
+      <p>From left to right, the information includes the file name, full file path, file size in bytes, modification date and time, format/PRONOM ID, format name, format version, and MIME type.</p>
+
+      <h2 id="byte-count">Byte Count Report</h2>
+      <p>The Byte Count Report is an Excel workbook composed of three worksheets: Summary, Directory Totals, and File Details. The Summary worksheet compares the calculated byte count and file count for each scanned bag with the <code>Payload-Oxum</code> value recorded in the bag's <code>bag-info.txt</code> file.</p>
+
+      <figure class="wide">
+        <img src="images/figure15_byte_count_summary_1.png" alt="Byte Count Summary worksheet, part 1">
+        <figcaption>Figure 21: Byte Count Summary, part 1</figcaption>
+      </figure>
+
+      <figure class="wide">
+        <img src="images/figure16_byte_count_summary_2.png" alt="Byte Count Summary worksheet, part 2">
+        <figcaption>Figure 22: Byte Count Summary, part 2</figcaption>
+      </figure>
+
+      <p>The Calculated Payload Bytes column contains the total number of payload bytes calculated by the application, while the Calculated Payload File Count column contains the number of payload files counted by the application. These values are combined in the Calculated Payload-Oxum column. The Stored Payload Bytes, Stored Payload File Count, and Stored Payload-Oxum columns contain values extracted from the Payload-Oxum field in the bag's <code>bag-info.txt</code> file.</p>
+      <p>The Byte Difference and File Count Difference columns show any differences between the stored and calculated values. The Payload-Oxum Result indicates whether the calculated values match the values recorded in the bag.</p>
+
+      <p>The Directory Totals worksheet provides the byte count for each directory in the selected media, along with the associated Digital ID and directory path.</p>
+
+      <figure class="wide">
+        <img src="images/figure17_directory_totals.png" alt="Directory Totals worksheet">
+        <figcaption>Figure 23: Directory Totals</figcaption>
+      </figure>
+
+      <p>The File Details worksheet provides information about each file in the selected media, including the Digital ID, file name, file path, and file size in bytes.</p>
+
+      <figure class="wide">
+        <img src="images/file_details.png" alt="File Details worksheet">
+        <figcaption>Figure 24: File(s) Byte Count</figcaption>
+      </figure>
+
+      <a class="back-to-toc" href="#toc">Back to Table of Contents</a>
+    </section>
+
+  </main>
+</body>
+</html>
