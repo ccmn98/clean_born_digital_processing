@@ -1,4 +1,5 @@
-('I:\\Clean_Born_digital_app\\build\\BornDigitalProcessing\\BornDigitalProcessing.pkg',
+('C:\\Users\\MSS '
+ 'Prep\\Documents\\GitHub\\clean_born_digital_processing\\build\\BornDigitalProcessing\\BornDigitalProcessing.pkg',
  {'BINARY': True,
   'DATA': True,
   'EXECUTABLE': True,
@@ -10,42 +11,57 @@
   'SYMLINK': False},
  [('pyi-contents-directory _internal', '', 'OPTION'),
   ('PYZ-00.pyz',
-   'I:\\Clean_Born_digital_app\\build\\BornDigitalProcessing\\PYZ-00.pyz',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\build\\BornDigitalProcessing\\PYZ-00.pyz',
    'PYZ'),
   ('struct',
-   'I:\\Clean_Born_digital_app\\build\\BornDigitalProcessing\\localpycs\\struct.pyc',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\build\\BornDigitalProcessing\\localpycs\\struct.pyc',
    'PYMODULE'),
   ('pyimod01_archive',
-   'I:\\Clean_Born_digital_app\\build\\BornDigitalProcessing\\localpycs\\pyimod01_archive.pyc',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\build\\BornDigitalProcessing\\localpycs\\pyimod01_archive.pyc',
    'PYMODULE'),
   ('pyimod02_importers',
-   'I:\\Clean_Born_digital_app\\build\\BornDigitalProcessing\\localpycs\\pyimod02_importers.pyc',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\build\\BornDigitalProcessing\\localpycs\\pyimod02_importers.pyc',
    'PYMODULE'),
   ('pyimod03_ctypes',
-   'I:\\Clean_Born_digital_app\\build\\BornDigitalProcessing\\localpycs\\pyimod03_ctypes.pyc',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\build\\BornDigitalProcessing\\localpycs\\pyimod03_ctypes.pyc',
    'PYMODULE'),
   ('pyimod04_pywin32',
-   'I:\\Clean_Born_digital_app\\build\\BornDigitalProcessing\\localpycs\\pyimod04_pywin32.pyc',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\build\\BornDigitalProcessing\\localpycs\\pyimod04_pywin32.pyc',
    'PYMODULE'),
   ('pyiboot01_bootstrap',
-   'I:\\Clean_Born_digital_app\\.venv\\Lib\\site-packages\\PyInstaller\\loader\\pyiboot01_bootstrap.py',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\.venv\\Lib\\site-packages\\PyInstaller\\loader\\pyiboot01_bootstrap.py',
    'PYSOURCE'),
   ('pyi_rth_inspect',
-   'I:\\Clean_Born_digital_app\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_inspect.py',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_inspect.py',
    'PYSOURCE'),
   ('pyi_rth_pkgutil',
-   'I:\\Clean_Born_digital_app\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pkgutil.py',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pkgutil.py',
    'PYSOURCE'),
   ('pyi_rth_multiprocessing',
-   'I:\\Clean_Born_digital_app\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_multiprocessing.py',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_multiprocessing.py',
    'PYSOURCE'),
   ('pyi_rth_pyqt5',
-   'I:\\Clean_Born_digital_app\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pyqt5.py',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_pyqt5.py',
    'PYSOURCE'),
   ('pyi_rth_setuptools',
-   'I:\\Clean_Born_digital_app\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_setuptools.py',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks\\pyi_rth_setuptools.py',
    'PYSOURCE'),
-  ('main', 'I:\\Clean_Born_digital_app\\main.py', 'PYSOURCE')],
+  ('main',
+   'C:\\Users\\MSS '
+   'Prep\\Documents\\GitHub\\clean_born_digital_processing\\main.py',
+   'PYSOURCE')],
  'python313.dll',
  True,
  False,

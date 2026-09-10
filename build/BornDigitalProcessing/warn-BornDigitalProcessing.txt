@@ -44,7 +44,7 @@ missing module named fcntl - imported by subprocess (optional), _pyrepl.unix_con
 missing module named readline - imported by cmd (delayed, conditional, optional), code (delayed, conditional, optional), rlcompleter (optional), pdb (delayed, optional), site (delayed, optional), sqlite3.__main__ (delayed, conditional, optional)
 missing module named trove_classifiers - imported by setuptools.config._validate_pyproject.formats (optional)
 missing module named _manylinux - imported by setuptools._vendor.packaging._manylinux (delayed, optional)
-missing module named pyimod02_importers - imported by I:\Clean_Born_digital_app\.venv\Lib\site-packages\PyInstaller\hooks\rthooks\pyi_rth_pkgutil.py (delayed)
+missing module named pyimod02_importers - imported by C:\Users\MSS Prep\Documents\GitHub\clean_born_digital_processing\.venv\Lib\site-packages\PyInstaller\hooks\rthooks\pyi_rth_pkgutil.py (delayed)
 missing module named collections.Mapping - imported by collections (optional), pytz.lazy (optional)
 missing module named defusedxml - imported by openpyxl.xml (delayed, optional), PIL.Image (optional)
 missing module named lxml - imported by openpyxl.xml (delayed, optional), pandas.io.xml (conditional)
