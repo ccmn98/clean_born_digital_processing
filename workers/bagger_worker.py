@@ -92,7 +92,7 @@ class BaggingWorker(QThread):
         had_errors = False
         failures = []
 
-        self.progress_signal.emit("=== BAGGER DEBUG (worker.run) ===")
+        #self.progress_signal.emit("=== BAGGER DEBUG (worker.run) ===")
         self.progress_signal.emit(
             f"output_directory={self.output_directory}"
         )
@@ -106,16 +106,14 @@ class BaggingWorker(QThread):
         except StopIteration:
             self.progress_signal.emit("inputs_map is empty")
 
-        self.progress_signal.emit("=== END BAGGER DEBUG ===")
+        #self.progress_signal.emit("=== END BAGGER DEBUG ===")
 
         try:
             bags_root = self.output_directory / "bags"
             bags_root.mkdir(parents=True, exist_ok=True)
 
             for digital_id, src in self.inputs_map.items():
-                self.progress_signal.emit(
-                    f"DEBUG loop: digital_id={digital_id} | src={src}"
-                )
+                #self.progress_signal.emit(f"DEBUG loop: digital_id={digital_id} | src={src}")
 
                 src_path = Path(src)
                 bag_root = bags_root / digital_id
@@ -126,7 +124,8 @@ class BaggingWorker(QThread):
                 self.progress_signal.emit(
                     f"📦 Starting bag: {digital_id}"
                 )
-
+                self.logger.info(f"Starting bagging for {digital_id} from source: {src_path}")
+                
                 # Normalize bare Windows drive letters such as A:
                 if len(str(src_path)) == 2 and str(src_path)[1] == ":":
                     src_path = Path(str(src_path) + "\\")
@@ -250,21 +249,15 @@ class BaggingWorker(QThread):
                             )
                         )
 
-                        self.progress_signal.emit(
-                            (
-                                f"▶ Copying: {source_file} "
-                                f"({file_number} of "
-                                f"{total_files})"
-                            )
-                        )
+                        # self.progress_signal.emit(
+                        #     (
+                        #         f"▶ Copying: {source_file} "
+                        #         f"({file_number} of "
+                        #         f"{total_files})"
+                        #     )
+                        # )
 
-                        print(
-                            (
-                                f"DEBUG: copying "
-                                f"{source_file} to {target}"
-                            ),
-                            flush=True
-                        )
+                        #print((f"DEBUG: copying "f"{source_file} to {target}"),flush=True)
 
                         shutil.copy2(
                             source_file,
@@ -295,9 +288,9 @@ class BaggingWorker(QThread):
                             )
                         )
 
-                        self.progress_signal.emit(
-                            f"✅ Copied: {source_file}"
-                        )
+                        # self.progress_signal.emit(
+                        #     f"✅ Copied: {source_file}"
+                        # )
 
                     # --------------------------------------------------
                     # Calculate payload totals

@@ -1,6 +1,9 @@
 from jinja2  import Template
 import subprocess
 import os
+from datetime import datetime
+import logging
+logger = logging.getLogger(__name__)
 
 class OutputManager:
     def __init__(self, output_widget, html_file_path="output.html", parent=None):
@@ -25,6 +28,52 @@ class OutputManager:
             .log {
                 color: green;
             }
+            
+            .processing-log {
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .log-entry {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            padding: 4px 6px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .log-time {
+            flex: 0 0 65px;
+            color: #777;
+        }
+
+        .log-icon {
+            flex: 0 0 16px;
+            font-weight: bold;
+        }
+
+        .log-message {
+            flex: 1;
+            overflow-wrap: anywhere;
+        }
+
+        .log-info {
+            color: #2463a6;
+        }
+
+        .log-success {
+            color: #16803c;
+        }
+
+        .log-warning {
+            color: #a36a00;
+        }
+
+        .log-error,
+        .log-critical {
+            color: #b42318;
+        }
         </style>
 
         {% if drive_digital_ids or directory_digital_ids %}
@@ -105,17 +154,25 @@ class OutputManager:
 
         <!-- New section for logs -->
         <h3>Processing Logs:</h3>
-        <div class="log">
-            {% if logs %}
-                <ul>
+            <div class="processing-log">
+                {% if logs %}
                     {% for log in logs %}
-                        <li>{{ log | safe }}</li>
+                        <div class="log-entry log-{{ log.level | lower }}">
+                            <span class="log-time">
+                                {{ log.timestamp }}
+                            </span>
+                            <span class="log-icon">
+                                {{ log.icon }}
+                            </span>
+                            <span class="log-message">
+                                {{ log.message | e }}
+                            </span>
+                        </div>
                     {% endfor %}
-                </ul>
-            {% else %}
-                <p>No logs available yet.</p>
-            {% endif %}
-        </div>
+                {% else %}
+                    <p>No processing messages yet.</p>
+                {% endif %}
+            </div>
         
         {% if file_format_links %}
         <h3>File Format Reports:</h3>
@@ -136,12 +193,14 @@ class OutputManager:
         try:
             subprocess.Popen(["notepad.exe", file_path], shell=True)
         except Exception as e:
-            print(f"Failed to open file in Notepad: {e}")
+            logger.exception("Failed to open file in Notepad")
 
     def append_content(self, content):
         current_content = self.output_widget.toHtml()
-        print(f" Current HTML Content: {current_content}")
-        print(f"current content {type(current_content)}")
+        logger.debug(
+            "Appending HTML content (%d characters)",
+            len(content)
+        )
         self.output_widget.setHtml(current_content + content)
 
     def clear_output(self):
@@ -153,8 +212,10 @@ class OutputManager:
             # Create and open the file in write mode to ensure it exists
             with open(self.html_file_path, "w") as file:
                 file.write("")  # Write empty content initially
-            print(f"HTML file created at: {os.path.abspath(self.html_file_path)}")
-            print(f"HTML CONTENT: {html_content}")
+            logger.debug(
+                "HTML output file created: %s",
+                os.path.abspath(self.html_file_path)
+            )
             self.file_created = True  # Mark file as created
             
         # Now append the new content
@@ -181,14 +242,16 @@ class OutputManager:
         
         
     def update_full_display(self, full_content):
-        
-        # Write to the HTML file and update the display
-        with open(self.html_file_path, "w", encoding="utf-8") as file:
+        """Save HTML output and refresh the GUI."""
+
+        with open(
+            self.html_file_path,
+            "w",
+            encoding="utf-8"
+        ) as file:
             file.write(full_content)
-        
-        # Read from the HTML file and update the QTextEdit widget
-        with open(self.html_file_path, "r", encoding="utf-8") as file:
-            self.output_widget.setHtml(file.read())
+
+        self.output_widget.setHtml(full_content)
  
         
     def load_html_to_output(self):
@@ -197,9 +260,29 @@ class OutputManager:
             content = file.read()
         self.output_widget.setHtml(content)
         
-    def log_message(self, message, **_):
-    # Append message to logs and update display
-        self.output_logs.append(message)
+    def log_message(self, message, level="INFO", **_):
+        level = level.upper()
+
+        if level == "DEBUG":
+            return
+
+        icons = {
+            "INFO": "ℹ",
+            "SUCCESS": "✓",
+            "WARNING": "⚠",
+            "ERROR": "✗",
+            "CRITICAL": "✗",
+        }
+
+        entry = {
+            "timestamp": datetime.now().strftime("%H:%M:%S"),
+            "level": level,
+            "icon": icons.get(level, "ℹ"),
+            "message": str(message),
+        }
+
+        self.output_logs.append(entry)
+
         self.update_display(
             self.parent_app.selected_drives_list,
             self.parent_app.selected_directories_list,
@@ -207,5 +290,5 @@ class OutputManager:
             self.parent_app.formatted_directory_digital_ids_list,
             self.parent_app.output_directory,
             self.parent_app.selected_drives_digID_dictionary,
-            self.parent_app.selected_directories_digID_dictionary
-        ) 
+            self.parent_app.selected_directories_digID_dictionary,
+        )
