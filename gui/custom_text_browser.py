@@ -11,8 +11,8 @@ class CustomTextBrowser(QTextBrowser):
         self.main_window = main_window
 
         # Prevent QTextBrowser from trying to display the file itself
+        self.setOpenLinks(False)
         self.setOpenExternalLinks(False)
-
         self.anchorClicked.connect(self.handle_link_click)
 
     def handle_link_click(self, url: QUrl):

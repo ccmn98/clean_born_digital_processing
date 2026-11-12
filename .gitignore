@@ -1,0 +1,34 @@
+# venv
+.venv/
+.vscode/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# VS Code (keep settings, ignore workspace noise)
+.vscode/*.log
+
+# Outputs (customize)
+reports/
+temp_files/
+logs/
+*.html
+*.pdf
+*.xlsx
+*.csv
+
+# compressed
+*.zip
+*.tar.gz
+*.tgz
+*.rar

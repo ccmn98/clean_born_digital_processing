@@ -9,6 +9,12 @@ from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 from PyQt5.QtCore import QThread, pyqtSignal
 
+EXCLUDED_FILES = {
+    "bag-info.txt",
+    "bagit.txt",
+    "manifest-md5.txt",
+    "tagmanifest-md5.txt",
+    }
 
 class ByteCountWorker(QThread):
     progress_signal = pyqtSignal(str)
@@ -116,6 +122,7 @@ class ByteCountWorker(QThread):
             "Directory Path",
             "Relative Directory",
             "Directory Bytes",
+            "File Count",
         ])
 
         self.file_ws.append([
@@ -239,6 +246,7 @@ class ByteCountWorker(QThread):
         total_size = 0
         file_count = 0
         directory_sizes = {}
+        directory_file_counts = {}
 
         for data_root, data_dirs, data_files in os.walk(
             payload_path,
@@ -246,10 +254,10 @@ class ByteCountWorker(QThread):
             onerror=self._walk_error,
         ):
             directory_total = 0
+            directory_count = 0
 
             for filename in data_files:
                 file_path = os.path.join(data_root, filename)
-
                 if os.path.islink(file_path):
                     continue
 
@@ -264,6 +272,7 @@ class ByteCountWorker(QThread):
                 total_size += size
                 file_count += 1
                 directory_total += size
+                directory_count += 1
 
                 relative_file_path = os.path.relpath(
                     file_path,
@@ -286,8 +295,10 @@ class ByteCountWorker(QThread):
                     subdirectory,
                     0,
                 )
+                directory_count += directory_file_counts.get(subdirectory, 0)
 
             directory_sizes[data_root] = directory_total
+            directory_file_counts[data_root] = directory_count
 
         for directory, size in sorted(directory_sizes.items()):
             self.dir_ws.append([
@@ -297,6 +308,7 @@ class ByteCountWorker(QThread):
                 directory,
                 os.path.relpath(directory, payload_path),
                 size,
+                directory_file_counts[directory],
             ])
 
         calculated_oxum = f"{total_size}.{file_count}"
@@ -370,6 +382,7 @@ class ByteCountWorker(QThread):
         total_size = 0
         file_count = 0
         directory_sizes = {}
+        directory_file_counts = {}
 
         for root, dirnames, filenames in os.walk(
             dir_path,
@@ -388,12 +401,16 @@ class ByteCountWorker(QThread):
                 continue
 
             directory_total = 0
+            directory_count = 0
 
             for filename in filenames:
                 file_path = os.path.join(root, filename)
+                if filename.lower() in EXCLUDED_FILES:
+                    continue
 
                 if os.path.islink(file_path):
                     continue
+
 
                 try:
                     size = os.path.getsize(file_path)
@@ -406,6 +423,7 @@ class ByteCountWorker(QThread):
                 total_size += size
                 file_count += 1
                 directory_total += size
+                directory_count += 1
 
                 self.file_ws.append([
                     digital_id,
@@ -430,8 +448,10 @@ class ByteCountWorker(QThread):
                     subdirectory,
                     0,
                 )
+                directory_count += directory_file_counts.get(subdirectory, 0)
 
             directory_sizes[root] = directory_total
+            directory_file_counts[root] = directory_count
 
         for directory, size in sorted(directory_sizes.items()):
             self.dir_ws.append([
@@ -441,6 +461,7 @@ class ByteCountWorker(QThread):
                 directory,
                 os.path.relpath(directory, dir_path),
                 size,
+                directory_file_counts[directory],
             ])
 
         self.summary_ws.append([
@@ -503,6 +524,10 @@ class ByteCountWorker(QThread):
             "Byte Difference",
             "Directory Bytes",
             "File Bytes",
+            "File Count",
+            "Stored Payload File Count",
+            "Calculated Payload File Count",
+            "File Count Difference",
         }
 
         for worksheet in (

@@ -278,6 +278,7 @@ class DirOutputApp(QMainWindow):
         self.output_text = QTextEdit()
         self.output_text = CustomTextBrowser(main_window=self)
         self.output_text.setReadOnly(True)
+
         
 # Apply font settings to all QLabel and QCheckBox widgets
         
@@ -1102,6 +1103,20 @@ class DirOutputApp(QMainWindow):
 # Function to run when the Run button is clicked and the selected is a drive
 
     def on_run_button_clicked(self ):
+        
+        menu_checkboxes = [ self.directory_checkbox, self.byte_count_checkbox, self.bagger_checkbox, self.directory_checkbox, self.special_file_exten_actio_checkbox, self.bagger_checkbox, self.excel_checkbox, self.html_checkbox, self.pdf_checkbox]
+        
+        if any(menu_selected.isChecked() for menu_selected in menu_checkboxes):
+            print("At least one menu option is selected. Proceeding with the run.")
+        else:
+            QMessageBox.warning(
+                self,
+                "No Menu Option Selected",
+                "Please select at least one menu option before running.",
+                QMessageBox.StandardButton.Ok,
+            )
+            return  # Exit the function if no menu option is selected
+        
         combined_dict = self.build_inputs_map()
 
         
