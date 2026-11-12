@@ -701,60 +701,6 @@ class DirOutputApp(QMainWindow):
         return filename
 
     
-    # Saving a user profile to [user name]_profile.json and 
-    # If no bagger JSON profile has been selected yet, show a warning and return.
-    
-    # def save_user_profile(self):
-    #     # 1. Make sure a JSON profile has been selected
-    #     if not hasattr(self, "bagger_profile_file_path") or not self.bagger_profile_file_path:
-    #         QMessageBox.warning(
-    #             self,
-    #             "No Profile Selected",
-    #             "Please select a JSON Bagger profile before saving the user profile."
-    #         )
-    #         return  # <- stop here so the GUI keeps running normally
-    #     # 2. Safely get LC Project text (may be empty, that’s fine)
-    #     lc_project_widget = self.user_entry_fields.get('LC-Project')
-    #     lc_project_text = lc_project_widget.toPlainText() if lc_project_widget else ""
-        
-    #     # 3. Event-Agent may not have been set yet; use empty string if so
-    #     event_agent = getattr(self, "current_value", "")
-        
-    #     lc_project_text = self.user_entry_fields['LC-Project'].toPlainText()
-    #     user_profile = {
-    #         'selected_bagger_profile_path': self.bagger_profile_file_path,
-    #         'selected_json_file': self.Bagger_JSON_file_combo_box.currentText(),
-    #         'lc_project': lc_project_text,
-    #         'registration_number': self.entry_file_name_registration_no_field.text(),
-    #         'event_agent': event_agent,
-    #         'self.output_directory': self.self.output_directory,
-    #         'preserve_output_directory': self.checkbox_preserve_output.isChecked(),
-    #         'completed_bags_dictionary': self.completed_dir_drives
-    #     }
-    #     profile_filename = self.build_profile_filename(event_agent, lc_project_text)
-    #     file_path = profile_filename
-    #     with open(file_path, 'w', encoding='utf-8') as f:
-    #         json.dump(user_profile, f, indent=4)
-            
-    #     # Create a QLabel to display the file path as a hyperlink
-    #     file_path_label = QLabel()
-    #     absolute_file_path = os.path.abspath(file_path)
-    #     file_path_label.setText(f'<a href="file:///{absolute_file_path}">{absolute_file_path}</a>')
-    #     file_path_label.setOpenExternalLinks(True)
-        
-    #     # Add the QLabel to the layout
-    #     # self.layout.addWidget(file_path_label)
-        
-    #     # Display a message box with information
-    #     QMessageBox.information(self, "Profile Saved", "User profile has been saved successfully.")
-        
-    #     # Open the path in Windows Explorer when the link is clicked
-    #     file_path_label.linkActivated.connect(self.open_file_location)    
-            
-
-    #     QMessageBox.information(self, "Profile Saved", f"User profile has been saved successfully at {os.path.abspath(file_path)}.")
-    #     print(f"Profile Dictionary: {self.bagger_info_dict}")
-        
     # Make fields read only
     def open_file_location(self, link):
         path = link[8:]  # Remove "file:///" prefix
@@ -1102,6 +1048,20 @@ class DirOutputApp(QMainWindow):
 # Function to run when the Run button is clicked and the selected is a drive
 
     def on_run_button_clicked(self ):
+        menu_checkboxes = [ self.directory_checkbox, self.byte_count_checkbox, self.bagger_checkbox, self.directory_checkbox, self.special_file_exten_actio_checkbox, self.bagger_checkbox, self.excel_checkbox, self.html_checkbox, self.pdf_checkbox]
+        
+        if any(menu_selected.isChecked() for menu_selected in menu_checkboxes):
+            print("At least one menu option is selected. Proceeding with the run.")
+        else:
+            QMessageBox.warning(
+                self,
+                "No Menu Option Selected",
+                "Please select at least one menu option before running.",
+                QMessageBox.StandardButton.Ok,
+            )
+            return  # Exit the function if no menu option is selected
+        
+        
         combined_dict = self.build_inputs_map()
 
         
