@@ -3,6 +3,7 @@ import subprocess
 import os
 from datetime import datetime
 import logging
+from pathlib import Path
 logger = logging.getLogger(__name__)
 
 class OutputManager:
@@ -12,6 +13,7 @@ class OutputManager:
         self.file_created = False
         self.output_logs = []
         self.file_format_links = []
+        self.report_links = []
         self.parent_app = parent  # Store the DirOutputApp instance
         
         # Track sections separately
@@ -154,26 +156,43 @@ class OutputManager:
 
         <!-- New section for logs -->
         <h3>Processing Logs:</h3>
-            <div class="processing-log">
-                {% if logs %}
-                    {% for log in logs %}
-                        <div class="log-entry log-{{ log.level | lower }}">
-                            <span class="log-time">
-                                {{ log.timestamp }}
-                            </span>
-                            <span class="log-icon">
-                                {{ log.icon }}
-                            </span>
-                            <span class="log-message">
-                                {{ log.message | e }}
-                            </span>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p>No processing messages yet.</p>
-                {% endif %}
-            </div>
-        
+
+        {% if logs %}
+        <table class="processing-log" cellspacing="0" cellpadding="4">
+            {% for log in logs %}
+            <tr>
+                <td width="65" valign="top">
+                    <span style="color:#777;">
+                        {{ log.timestamp }}
+                    </span>
+                </td>
+                <td width="20" valign="top">
+                    {{ log.icon }}
+                </td>
+                <td valign="top">
+                    <span class="log-{{ log.level | lower }}">
+                        {{ log.message | e }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p>No processing messages yet.</p>
+        {% endif %}
+                
+        {% if report_links %}
+            <h3>Generated Reports:</h3>
+            <ul>
+                {% for report in report_links %}
+                    <li>
+                        <a href="{{ report.url | e }}">
+                            {{ report.label | e }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% if file_format_links %}
         <h3>File Format Reports:</h3>
         <div class="file-format-links">
@@ -234,6 +253,7 @@ class OutputManager:
             "confirm_directories": confirm_directories,
             "logs": self.output_logs,
             "file_format_links": self.file_format_links,
+            "report_links": self.report_links,
         }
         full_content = self.combined_template.render(data)
         
@@ -281,8 +301,17 @@ class OutputManager:
             "message": str(message),
         }
 
-        self.output_logs.append(entry)
+        # Prevent identical consecutive messages
+        if self.output_logs:
+            previous = self.output_logs[-1]
 
+            if (
+                previous["message"] == entry["message"]
+                and previous["level"] == entry["level"]
+            ):
+                return
+        self.output_logs.append(entry)
+        
         self.update_display(
             self.parent_app.selected_drives_list,
             self.parent_app.selected_directories_list,
@@ -292,3 +321,28 @@ class OutputManager:
             self.parent_app.selected_drives_digID_dictionary,
             self.parent_app.selected_directories_digID_dictionary,
         )
+        
+
+    def add_report_link(self, label, file_path):
+        """Register a report link for display."""
+
+        path = Path(file_path).resolve()
+
+        if not path.is_file():
+            logging.getLogger(__name__).warning(
+                "Report file does not exist: %s", path
+            )
+            return
+
+        entry = {
+            "label": str(label),
+            "url": path.as_uri(),
+        }
+
+        if entry not in self.report_links:
+            self.report_links.append(entry)
+
+            self.log_message(
+                f"Report available: {label}",
+                level="SUCCESS"
+            )

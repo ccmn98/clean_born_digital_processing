@@ -615,7 +615,9 @@ class DirOutputApp(QMainWindow):
             
     # Update PRONOM signatures    
     def run_pronom_signature_update(self):
-        self.output_text.append("Updating PRONOM signatures using sf -update...")
+        self.output_manager.log_message(
+            "Updating PRONOM signatures using sf -update..."
+        )
 
         here = Path(__file__).resolve()
         project_root = here.parent.parent
@@ -630,7 +632,9 @@ class DirOutputApp(QMainWindow):
         )
 
         for line in process.stdout:
-            self.output_text.append(line.strip())
+            message = line.strip()
+            if message:
+                self.output_manager.log_message(message)
         
 
             
@@ -1052,10 +1056,9 @@ class DirOutputApp(QMainWindow):
 # Function to run when the Run button is clicked and the selected is a drive
 
     def on_run_button_clicked(self ):
-<<<<<<< HEAD
-=======
+
         
->>>>>>> 672689a494223a82e985251a5b5f185cfd44af58
+
         menu_checkboxes = [ self.directory_checkbox, self.byte_count_checkbox, self.bagger_checkbox, self.directory_checkbox, self.special_file_exten_actio_checkbox, self.bagger_checkbox, self.excel_checkbox, self.html_checkbox, self.pdf_checkbox]
         
         if any(menu_selected.isChecked() for menu_selected in menu_checkboxes):
@@ -1069,10 +1072,9 @@ class DirOutputApp(QMainWindow):
             )
             return  # Exit the function if no menu option is selected
         
-<<<<<<< HEAD
+
         
-=======
->>>>>>> 672689a494223a82e985251a5b5f185cfd44af58
+
         combined_dict = self.build_inputs_map()
 
         
@@ -1270,13 +1272,11 @@ class DirOutputApp(QMainWindow):
         mismatched = results.get("mismatched_bags", 0)
         unavailable = results.get("unavailable_oxum", 0)
 
-        windows_path = report_path.replace("\\", "/")
-
-        report_link = (
-            f'<a href="file:///{windows_path}" '
-            f'style="color: blue; text-decoration: underline;">'
-            f'Open byte-count report</a>'
-        )
+        if report_path:
+            self.output_manager.add_report_link(
+                label="Byte Count Report — Excel",
+                file_path=report_path
+            )
 
         self.output_manager.log_message(
             "✅ Byte count completed. "
@@ -1318,7 +1318,8 @@ class DirOutputApp(QMainWindow):
 
     def _on_byte_count_error(self, message):
         self.output_manager.log_message(
-            f"<b>⚠️ Byte count failed:</b><br>{html.escape(message)}"
+            f"Byte count failed: {message}",
+            level="ERROR"
         )
 
         self.progress_bar.setRange(0, 100)
@@ -1345,15 +1346,10 @@ class DirOutputApp(QMainWindow):
             "Drive Directory Listings Completed!"
         )
 
-        for digital_id, path in results.items():
-            windows_path = str(path).replace("\\", "/")
-            file_link = (
-                f'<a href="file:///{windows_path}" '
-                f'style="color: blue; text-decoration: underline;">'
-                f'{windows_path}</a>'
-            )
-            self.output_manager.log_message(
-                f"{digital_id} -> {file_link}"
+        for kind, path in results.items():
+            self.output_manager.add_report_link(
+                label=f"Directory Listing — {kind.upper()}",
+                file_path=path
             )
             
         self.current_activity_label.setText(
@@ -1370,14 +1366,11 @@ class DirOutputApp(QMainWindow):
     def on_drive_listings_completed(self, results):
         self.output_manager.log_message("Drive Directory Listings Completed!")
 
-        for drive, path in results.items():
-            windows_path = path.replace("\\", "/")
-            file_link = (
-                f'<a href="file:///{windows_path}" '
-                f'style="color: blue; text-decoration: underline;">'
-                f'{windows_path}</a>'
+        for kind, path in results.items():
+            self.output_manager.add_report_link(
+                label=f"Directory Listing — {kind.upper()}",
+                file_path=path
             )
-            self.output_manager.log_message(f"{drive} -> {file_link}")
 
         self.update_output_display()
         self.finish_progress("Directory listing complete")           
@@ -1441,9 +1434,9 @@ class DirOutputApp(QMainWindow):
             task_type="both",
         )
 
-        # self.file_extension_worker.progress_signal.connect(
-        #     self.output_text.append
-        # )
+        self.file_extension_worker.progress_signal.connect(
+            self.on_worker_message
+        )
 
         self.file_extension_worker.completed_signal.connect(
             self.on_extension_scan_completed
@@ -1457,23 +1450,16 @@ class DirOutputApp(QMainWindow):
 
         self.output_manager.log_message("File extension scan completed!")
 
-        for digital_id, path in results.items():
-            windows_path = str(path).replace("\\", "/")
-            file_link = (
-                f'<a href="file:///{windows_path}" '
-                f'style="color: blue; text-decoration: underline;">'
-                f'{windows_path}</a>'
-            )
-            self.output_manager.log_message(
-                f"{digital_id} -> {file_link}"
+        for kind, path in results.items():
+            self.output_manager.add_report_link(
+                label=f"File extension scan — {kind.upper()}",
+                file_path=path
             )
 
         self.current_step_label.setText(
             "Current Step: File extension scan complete"
         )
-        self.file_extension_worker.progress_signal.connect(
-            self.output_text.append
-        )
+
         
         self.current_activity_label.setText(
             "Current Activity: File extension scan complete"
@@ -1683,19 +1669,11 @@ class DirOutputApp(QMainWindow):
             )
             return
 
-        lines = []
-
         for kind, path in created.items():
-            p = str(path).replace("\\", "/")
-            link = (
-                f'<a href="file:///{p}" '
-                f'style="color: blue; text-decoration: underline;">'
-                f'{p}</a>'
+            self.output_manager.add_report_link(
+                label=f"File Format Report — {kind.upper()}",
+                file_path=path
             )
-            lines.append(f"✅ {kind.upper()}: {link}")
-
-        self.output_manager.file_format_links = lines
-        self.update_output_display()
 
         QMessageBox.information(
             self,
@@ -1786,10 +1764,11 @@ class DirOutputApp(QMainWindow):
         self.progress_bar.setValue(0)
         self.progress_bar.setFormat("File-format scan failed")
         QMessageBox.critical(self, "File Format Scan Error", message)
-        try:
-            self.output_text.append(f"❌ Error: {message}")
-        except Exception:
-            print("Error:", message)
+        self.output_manager.log_message(
+            f"File format scan failed: {message}",
+            level="ERROR"
+        )
+        self.logger.error("File format scan failed: %s", message)
             
         self.current_step_label.setText(
             "Current Step: File-format processing error"
@@ -2013,9 +1992,10 @@ class DirOutputApp(QMainWindow):
 
         if had_errors:
             self.output_manager.log_message(
-                "<b>⚠️ Bagging completed with errors.</b><br>"
-                f"Successful bags: {len(results)}<br>"
-                f"Failed bags: {len(failures)}"
+                f"Bagging completed with errors. "
+                f"Successful bags: {len(results)}; "
+                f"Failed bags: {len(failures)}",
+                level="WARNING"
             )
 
             self.progress_bar.setRange(0, 100)
@@ -2075,22 +2055,16 @@ class DirOutputApp(QMainWindow):
             self.start_file_format_scan()
         
     def _on_bagging_error(self, message: str):
-        safe_message = html.escape(message)
-        formatted_message = (
-            '<pre style=" '
-            'white-space: pre-wrap; '
-            'color: #a00000; '
-            'background-color: #fff3f3; '
-            'border: 1px solid #cc0000; '
-            'padding: 8px; '
-            '">'
-            f"{safe_message}"
-            "</pre>"
+        
+        self.output_manager.log_message(
+            f"Bagging failed: {message}",
+            level="ERROR"
         )
+        self.logger.error(message)
+
         self.current_step_label.setText("Current Step: Bagging error")
         self.current_file_label.setText("Current File: See error details")
-        
-        self.output_manager.log_message(formatted_message)
+
         self.logger.error(message)
 
         self.progress_bar.setRange(0, 100)
