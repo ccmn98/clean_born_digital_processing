@@ -13,20 +13,43 @@ from gui.main_window import DirOutputApp
 from workers.file_extension_scan import FileExtensionScanWorker
 from core.config import LOG_DIR, ensure_app_directories
 
+from logging.handlers import RotatingFileHandler
+
 APP_DIR = Path.home() / ".BornDigitalProcessing"
 LOG_DIR = APP_DIR / "logs"
 
-def setup_logging(log_dir: Path, level=logging.INFO) -> None:
+def setup_logging(log_dir, level=logging.DEBUG):
     log_dir.mkdir(parents=True, exist_ok=True)
-    log_path = log_dir / "born_digital_processing.log"
 
-    logging.basicConfig(
-        level=level,
-        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-        handlers=[
-            logging.FileHandler(log_path, encoding="utf-8")  # optional (may not show in GUI builds)
-        ],
+    logger = logging.getLogger()
+    logger.setLevel(level)
+
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
+        handler.close()
+
+    formatter = logging.Formatter(
+        "%(asctime)s | %(levelname)-7s | "
+        "%(name)s | %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
     )
+
+    file_handler = RotatingFileHandler(
+        log_dir / "born_digital_processing.log",
+        maxBytes=5_000_000,
+        backupCount=3,
+        encoding="utf-8"
+    )
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.WARNING)
+    console_handler.setFormatter(formatter)
+
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+    
 def resource_path(relative_path):
     """Return the correct resource path for development and PyInstaller."""
     if getattr(sys, "frozen", False):
@@ -39,7 +62,6 @@ def resource_path(relative_path):
 def main():
     #Starting log and temp files
     ensure_app_directories()
-    setup_logging(LOG_DIR)
     
     # Start the Flask server as a background process
     setup_logging(LOG_DIR)    

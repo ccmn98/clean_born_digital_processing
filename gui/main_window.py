@@ -48,6 +48,7 @@ HELP_DOCS_DIR = CORE_DIR / "help_docs"
 
 import logging
 logger = logging.getLogger(__name__)
+from logging.handlers import RotatingFileHandler
 
 class DirOutputApp(QMainWindow):
     def __init__(self):
@@ -278,6 +279,7 @@ class DirOutputApp(QMainWindow):
         self.output_text = QTextEdit()
         self.output_text = CustomTextBrowser(main_window=self)
         self.output_text.setReadOnly(True)
+
         
 # Apply font settings to all QLabel and QCheckBox widgets
         
@@ -717,6 +719,8 @@ class DirOutputApp(QMainWindow):
         self.text_edit.setReadOnly(True)
         if event is not None:
             super(QTextEdit, self.text_edit).focusOutEvent(event)
+            
+
     
     # Load JSON Files
     
@@ -1048,6 +1052,10 @@ class DirOutputApp(QMainWindow):
 # Function to run when the Run button is clicked and the selected is a drive
 
     def on_run_button_clicked(self ):
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 672689a494223a82e985251a5b5f185cfd44af58
         menu_checkboxes = [ self.directory_checkbox, self.byte_count_checkbox, self.bagger_checkbox, self.directory_checkbox, self.special_file_exten_actio_checkbox, self.bagger_checkbox, self.excel_checkbox, self.html_checkbox, self.pdf_checkbox]
         
         if any(menu_selected.isChecked() for menu_selected in menu_checkboxes):
@@ -1061,7 +1069,10 @@ class DirOutputApp(QMainWindow):
             )
             return  # Exit the function if no menu option is selected
         
+<<<<<<< HEAD
         
+=======
+>>>>>>> 672689a494223a82e985251a5b5f185cfd44af58
         combined_dict = self.build_inputs_map()
 
         
@@ -1168,7 +1179,7 @@ class DirOutputApp(QMainWindow):
         )
 
         self.dir_worker.progress_signal.connect(
-            self.output_text.append
+            self.on_worker_message
         )
 
         self.dir_worker.completed_signal.connect(
@@ -1197,9 +1208,9 @@ class DirOutputApp(QMainWindow):
         self.current_activity_label.setText(
             "Current Activity: Calculating byte counts"
         )
-        self.current_step_label.setText(
-            "Current Step: Scanning directories and files"
-        )
+        # self.dir_worker.progress_signal.connect(
+        #     self.output_text.append
+        # )
         self.current_file_label.setText(
             "Current File: Preparing byte-count scan"
         )
@@ -1268,12 +1279,12 @@ class DirOutputApp(QMainWindow):
         )
 
         self.output_manager.log_message(
-            "<b>Byte count completed.</b><br>"
-            f"Objects processed: {processed}<br>"
-            f"Matching bags: {matched}<br>"
-            f"Bag mismatches: {mismatched}<br>"
-            f"Payload-Oxum unavailable: {unavailable}<br>"
-            f"{report_link}"
+            "✅ Byte count completed. "
+            f"Objects processed: {processed}; "
+            f"Matching bags: {matched}; "
+            f"Bag mismatches: {mismatched}; "
+            f"Payload-Oxum unavailable: {unavailable}",
+            level="SUCCESS"
         )
 
         if mismatched:
@@ -1430,9 +1441,9 @@ class DirOutputApp(QMainWindow):
             task_type="both",
         )
 
-        self.file_extension_worker.progress_signal.connect(
-            self.output_text.append
-        )
+        # self.file_extension_worker.progress_signal.connect(
+        #     self.output_text.append
+        # )
 
         self.file_extension_worker.completed_signal.connect(
             self.on_extension_scan_completed
@@ -1460,8 +1471,8 @@ class DirOutputApp(QMainWindow):
         self.current_step_label.setText(
             "Current Step: File extension scan complete"
         )
-        self.current_file_label.setText(
-            "Current File: None"
+        self.file_extension_worker.progress_signal.connect(
+            self.output_text.append
         )
         
         self.current_activity_label.setText(
@@ -1817,9 +1828,12 @@ class DirOutputApp(QMainWindow):
         print("selected_output_directory var:", getattr(self, "selected_output_directory", None))
 
         raw_map = self.build_inputs_map()
-        print("raw_map type:", type(raw_map))
-        print("raw_map len:", len(raw_map))
-        print("raw_map preview:", list(raw_map.items())[:3])
+        self.logger.debug("raw_map type: %s", type(raw_map).__name__)
+        self.logger.debug("raw_map length: %d", len(raw_map))
+        self.logger.debug(
+            "raw_map preview: %s",
+            list(raw_map.items())[:3]
+        )
         
         self.current_activity_label.setText(
             "Current Activity: Copying files into BagIt structure"
@@ -1876,9 +1890,8 @@ class DirOutputApp(QMainWindow):
             ),
         )
 
-        
         self.bag_worker.progress_signal.connect(
-            self.output_text.append
+            self.on_worker_message
         )
 
         self.bag_worker.progress_percent_signal.connect(
@@ -1900,10 +1913,40 @@ class DirOutputApp(QMainWindow):
         self.bag_worker.completed_signal.connect(
             self._on_bagging_done
         )
-
-        self.start_indeterminate_progress("Bagging...")
-
         self.bag_worker.start()
+        
+    def on_worker_message(self, message):
+        """Handle worker messages consistently."""
+
+        message = str(message).strip()
+
+        if not message:
+            return
+
+        lower = message.lower()
+
+        # Ignore repetitive file-copying messages.
+        if (
+            lower.startswith(("copying:", "copied:"))
+            or lower.startswith(("▶ copying:", "✅ copied:"))
+        ):
+            return
+
+        if "error" in lower or "failed" in lower:
+            level = "ERROR"
+        elif "warning" in lower:
+            level = "WARNING"
+        elif "completed" in lower or "successfully" in lower:
+            level = "SUCCESS"
+        else:
+            level = "INFO"
+
+        self.output_manager.log_message(
+            message,
+            level=level
+        )
+        
+    
         
     def _on_bag_file_started(
         self,
