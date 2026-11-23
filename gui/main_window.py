@@ -1326,12 +1326,12 @@ class DirOutputApp(QMainWindow):
         )
 
         self.output_manager.log_message(
-            "<b>Byte count completed.</b><br>"
-            f"Objects processed: {processed}<br>"
-            f"Matching bags: {matched}<br>"
-            f"Bag mismatches: {mismatched}<br>"
-            f"Payload-Oxum unavailable: {unavailable}<br>"
-            f"{report_link}"
+            "✅ Byte count completed. "
+            f"Objects processed: {processed}; "
+            f"Matching bags: {matched}; "
+            f"Bag mismatches: {mismatched}; "
+            f"Payload-Oxum unavailable: {unavailable}",
+            level="SUCCESS"
         )
 
         if mismatched:

@@ -10,6 +10,7 @@ from pathlib import Path
 import bagit
 from PyQt5.QtCore import QThread, pyqtSignal
 
+import logging
 
 logger = logging.getLogger(
     "born_digital_processing"
@@ -42,6 +43,7 @@ class BaggingWorker(QThread):
         parent=None,
     ):
         super().__init__(parent)
+        self.logger = logging.getLogger(__name__)
         self.inputs_map = dict(inputs_map)
         self.output_directory = Path(output_directory)
         self.bagger_info_dict = dict(bagger_info_dict or {})
@@ -124,7 +126,8 @@ class BaggingWorker(QThread):
                 self.progress_signal.emit(
                     f"📦 Starting bag: {digital_id}"
                 )
-                self.logger.info(f"Starting bagging for {digital_id} from source: {src_path}")
+                logger.info("Starting bagging for %s from source: %s", digital_id, src_path)
+
                 
                 # Normalize bare Windows drive letters such as A:
                 if len(str(src_path)) == 2 and str(src_path)[1] == ":":

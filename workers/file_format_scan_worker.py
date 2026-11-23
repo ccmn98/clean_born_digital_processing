@@ -467,7 +467,7 @@ def prepare_render_data(
     for (fmt, pid, ver), count in scan_summary.most_common():
         summary_rows.append({
             'format_name': fmt,
-            'Pronom ID': pid,
+            'format_id': pid,
             'version': ver,
             'counts': count,
         })
@@ -595,13 +595,13 @@ def get_html_template() -> str:
             border: 1px solid black;
             }
             /* Make Scan Date / Scan Time columns wider and keep them on one line */
-            .digital-media-section table th:nth-child(3),
-            .digital-media-section table th:nth-child(4),
-            .digital-media-section table td:nth-child(3),
-            .digital-media-section table td:nth-child(4) {
-                white-space: nowrap;    /* keep the date/time on a single line */
-                min-width: 20px;       /* tweak this value as needed */
-}
+            .scan-information .digital-media-section table th:nth-child(3),
+            .scan-information .digital-media-section table th:nth-child(4),
+            .scan-information .digital-media-section table td:nth-child(3),
+            .scan-information .digital-media-section table td:nth-child(4) {
+                white-space: nowrap;
+                min-width: 100px;
+            }
             
             .scan-1{
                 color: #003300;
@@ -696,6 +696,92 @@ def get_html_template() -> str:
                 .sortable th:nth-child(6),
                 .sortable td:nth-child(6) { white-space: nowrap; }
         }
+        /* Complete File Listing */
+
+            .complete-listing-wrapper {
+                width: 100%;
+                overflow-x: auto;
+                overflow-y: hidden;
+                margin-top: 20px;
+                border: 1px solid #ddd;
+            }
+
+            #sortable-complete {
+                width: max-content;
+                min-width: 100%;
+                table-layout: auto;
+                border-collapse: collapse;
+                margin-top: 0;
+            }
+
+            #sortable-complete th,
+            #sortable-complete td {
+                padding: 8px 10px;
+                vertical-align: top;
+                text-align: left;
+                word-break: normal;
+                overflow-wrap: normal;
+            }
+
+            #sortable-complete th {
+                white-space: nowrap;
+                background-color: #e8eef5;
+            }
+
+            /* Filenames */
+            #sortable-complete th:nth-child(2),
+            #sortable-complete td:nth-child(2) {
+                min-width: 180px;
+                max-width: 320px;
+                overflow-wrap: anywhere;
+            }
+
+            /* File paths */
+            #sortable-complete th:nth-child(3),
+            #sortable-complete td:nth-child(3) {
+                min-width: 260px;
+                max-width: 450px;
+                overflow-wrap: anywhere;
+            }
+
+            /* Dates and times */
+            #sortable-complete th:nth-child(5),
+            #sortable-complete td:nth-child(5),
+            #sortable-complete th:nth-child(6),
+            #sortable-complete td:nth-child(6),
+            #sortable-complete th:nth-child(7),
+            #sortable-complete td:nth-child(7),
+            #sortable-complete th:nth-child(8),
+            #sortable-complete td:nth-child(8) {
+                white-space: nowrap;
+            }
+
+            /* PRONOM identifiers */
+            #sortable-complete th:nth-child(9),
+            #sortable-complete td:nth-child(9) {
+                white-space: nowrap;
+            }
+
+            /* Format and MIME type */
+            #sortable-complete td:nth-child(10) {
+                min-width: 180px;
+                max-width: 260px;
+                overflow-wrap: break-word;
+            }
+
+            #sortable-complete td:nth-child(12) {
+                white-space: nowrap;
+            }
+
+            /* Alternating rows */
+            #sortable-complete tbody tr:nth-child(even) {
+                background-color: #f5f7fa;
+            }
+
+            #sortable-complete tbody tr:hover {
+                background-color: #eaf2fb;
+            }
+        
         </style> 
     </head>
     <body id="Home" style="padding-top: 70px">
@@ -893,10 +979,11 @@ def get_html_template() -> str:
                 {% endfor %}
             </div>
                         
-
             <div class="digital-media-section">
                 <h2 id="complete-listing">Complete File Listing</h2>
-                <table class="sortable" id="sortable-complete">
+
+                <div class="complete-listing-wrapper">
+                    <table class="sortable" id="sortable-complete">
                     <thead>
                         <tr>
                             <th>Digital ID</th>
@@ -946,7 +1033,8 @@ def get_html_template() -> str:
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
+            </div> <!-- complete-listing-wrapper -->
+        </div> <!-- digital-media-section -->
     </body>
     </html> """
 
