@@ -2,6 +2,8 @@ import json
 import subprocess
 from datetime import date
 from pathlib import Path
+import shutil
+
 
 
 ROOT_DIR = Path(__file__).resolve().parent
@@ -27,6 +29,14 @@ def get_git_commit():
 
 
 def main():
+    
+    if shutil.which("git") is None:
+        raise SystemExit(
+            "ERROR: Git was not found. "
+            "Please install Git for Windows and ensure "
+            "it is included in the system PATH."
+        )
+        
     with VERSION_FILE.open("r", encoding="utf-8") as f:
         version_info = json.load(f)
 
