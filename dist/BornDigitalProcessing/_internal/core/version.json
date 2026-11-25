@@ -1,7 +1,7 @@
 {
     "version": "1.0.0-dev",
-    "build_date": "2026-09-04",
-    "build": 31,
+    "build_date": "2026-11-25",
+    "build": 10,
     "status": "development",
-    "commit": "8d432f8"
+    "commit": "8ff8266"
 }
