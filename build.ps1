@@ -1,3 +1,6 @@
+# Set the working directory to the project root
+Set-Location -LiteralPath $PSScriptRoot
+
 $Python = Join-Path $PSScriptRoot ".venv\Scripts\python.exe"
 
 if (-not (Test-Path $Python)) {
@@ -15,11 +18,11 @@ Stop-Process -Name "BornDigitalProcessing" -Force -ErrorAction SilentlyContinue
 Write-Host "Removing previous build folders..." -ForegroundColor Yellow
 
 if (Test-Path $BuildDir) {
-    Remove-Item -Recurse -Force $BuildDir
+    Remove-Item -Recurse -Force $BuildDir -ErrorAction Stop
 }
 
 if (Test-Path $DistDir) {
-    Remove-Item -Recurse -Force $DistDir
+    Remove-Item -Recurse -Force $DistDir -ErrorAction Stop
 }
 
 Write-Host "Building BornDigitalProcessing..." -ForegroundColor Cyan
@@ -27,6 +30,7 @@ Write-Host "Using Python: $Python"
 Write-Host ""
 
 & $Python -m PyInstaller --clean --noconfirm --onedir `
+    --windowed `
     --name BornDigitalProcessing `
     --icon "core\images\US-LibraryOfCongress-Logo.ico" `
     --add-data "core\images\US-LibraryOfCongress-Logo.ico:core\images" `
